@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Copyright 101Computing.net (Modified for NiggAli Enigma Çözücü) -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-24638485-49"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-24638485-49');
+    </script>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>NiggAli Enigma Çözücü</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Allerta+Stencil');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); /* Modern-retro font for WW2 feel */
+    </style>
+    <link rel="stylesheet" href="https://www.101computing.net/enigma/css/style.css">
+    <script type="text/javascript" src="//monu.delivery/site/e/3/6412e3-8c8b-46e9-978b-10be3d9c65e1.js" data-cfasync="false"></script>
+    <!-- Custom styles for WW2 theme and modernization -->
+    <style>
+        body {
+            background-color: #2e3d2b; /* Dark green military background */
+            background-image: url('https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png'); /* Subtle WW2 fabric texture */
+            font-family: 'Allerta Stencil', sans-serif;
+            color: #e0e0e0; /* Light text for contrast */
+        }
+        #enigmaWrapper {
+            background-color: #4b5320; /* Army green */
+            border: 4px solid #333; /* Metal frame look */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); /* Modern shadow for depth */
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto; /* Centered and responsive */
+        }
+        .heading1 {
+            font-family: 'Press Start 2P', cursive; /* Retro-modern WW2 font */
+            color: #ffd700; /* Gold for accent */
+            text-shadow: 2px 2px 4px #000; /* Shadow for depth */
+        }
+        .rotor {
+            background-color: #333; /* Dark metal */
+            border: 2px solid #666;
+            border-radius: 5px;
+        }
+        .light, .key, .plug {
+            background-color: #555; /* Gray metal */
+            color: #fff;
+            border: 1px solid #888;
+            border-radius: 5px; /* Modern rounded edges */
+            transition: background-color 0.3s; /* Smooth hover effect */
+        }
+        .light:hover, .key:hover, .plug:hover {
+            background-color: #777; /* Hover for interactivity */
+        }
+        #footer {
+            text-align: center;
+            color: #ffd700;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        /* Ensure responsiveness */
+        @media (max-width: 600px) {
+            #enigmaWrapper {
+                padding: 10px;
+            }
+            .heading1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="heading1">NiggAli Enigma Çözücü </h1>
+    <div id="enigmaZoom">
+        <div id="enigmaWrapper">
+            <div id="enigma">
+                <div id="rotorSettings" class="standalone">
+                    <table border=1 cellpadding=4 cellspacing=0 width=100%>
+                        <tr>
+                            <td>Reflector:&nbsp;<select id="reflector"><option>UKW-B</option><option>UKW-C</option></select></td>
+                            <td>1<sup>st</sup> Rotor:</td>
+                            <td>2<sup>nd</sup> Rotor:</td>
+                            <td>3<sup>rd</sup> Rotor:</td>
+                        </tr>
+                        <tr>
+                            <td>Rotor</td>
+                            <td><select id="rotor1Select"><option>I</option><option>II</option><option>III</option><option>IV</option><option>V</option></select></td>
+                            <td><select id="rotor2Select"><option>I</option><option selected>II</option><option>III</option><option>IV</option><option>V</option></select></td>
+                            <td><select id="rotor3Select"><option>I</option><option>II</option><option selected>III</option><option>IV</option><option>V</option></select></td>
+                        </tr>
+                        <tr>
+                            <td>Ring Setting</td>
+                            <td><select id="rotor1Setting"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option><option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option></select></td>
+                            <td><select id="rotor2Setting"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option><option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option></select></td>
+                            <td><select id="rotor3Setting"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option><option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option></select></td>
+                        </tr>
+                        <tr>
+                            <td>Initial Position</td>
+                            <td><select id="rotor1Position"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option><option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option></select></td>
+                            <td><select id="rotor2Position"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option><option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option></select></td>
+                            <td><select id="rotor3Position"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option><option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option></select></td>
+                        </tr>
+                    </table>
+                    <button onclick="cancelSettings();">Cancel</button>
+                    <button onclick="applySettings();">Apply Settings</button>
+                </div>
+                <div id="rotors" onclick="displayRotorSettings();">
+                    <div class="rotor" id="rotor1">
+                        <div class="letter nextLetter" id="rotor1Next" onclick="previousRotor(1);">B</div>
+                        <div class="letter currentLetter" id="rotor1Current">A</div>
+                        <div class="letter previousLetter" id="rotor1Previous" onclick="nextRotor(1);">Z</div>
+                    </div>
+                    <div class="rotor" id="rotor2">
+                        <div class="letter nextLetter" id="rotor2Next" onclick="previousRotor(2);">B</div>
+                        <div class="letter currentLetter" id="rotor2Current">A</div>
+                        <div class="letter previousLetter" id="rotor2Previous" onclick="nextRotor(2);">Z</div>
+                    </div>
+                    <div class="rotor" id="rotor3">
+                        <div class="letter nextLetter" id="rotor3Next" onclick="previousRotor(3);">B</div>
+                        <div class="letter currentLetter" id="rotor3Current">A</div>
+                        <div class="letter previousLetter" id="rotor3Previous" onclick="nextRotor(3);">Z</div>
+                    </div>
+                </div>
+
+                <div id="lampboard">
+                    <div class="light" id="lightQ">Q</div>
+                    <div class="light" id="lightW">W</div>
+                    <div class="light" id="lightE">E</div>
+                    <div class="light" id="lightR">R</div>
+                    <div class="light" id="lightT">T</div>
+                    <div class="light" id="lightZ">Z</div>
+                    <div class="light" id="lightU">U</div>
+                    <div class="light" id="lightI">I</div>
+                    <div class="light" id="lightO">O</div>
+                    <div class="light" id="lightA" style="clear: left; margin-left:48px;">A</div>
+                    <div class="light" id="lightS">S</div>
+                    <div class="light" id="lightD">D</div>
+                    <div class="light" id="lightF">F</div>
+                    <div class="light" id="lightG">G</div>
+                    <div class="light" id="lightH">H</div>
+                    <div class="light" id="lightJ">J</div>
+                    <div class="light" id="lightK">K</div>
+                    <div class="light" id="lightP" style="clear: left;">P</div>
+                    <div class="light" id="lightY">Y</div>
+                    <div class="light" id="lightX">X</div>
+                    <div class="light" id="lightC">C</div>
+                    <div class="light" id="lightV">V</div>
+                    <div class="light" id="lightB">B</div>
+                    <div class="light" id="lightN">N</div>
+                    <div class="light" id="lightM">M</div>
+                    <div class="light" id="lightL">L</div>
+                </div>
+                <div class="line"></div>
+
+                <div id="keyboard">
+                    <div class="key" onclick="pressKey(this);" id="keyQ">Q</div>
+                    <div class="key" onclick="pressKey(this);" id="keyW">W</div>
+                    <div class="key" onclick="pressKey(this);" id="keyE">E</div>
+                    <div class="key" onclick="pressKey(this);" id="keyR">R</div>
+                    <div class="key" onclick="pressKey(this);" id="keyT">T</div>
+                    <div class="key" onclick="pressKey(this);" id="keyZ">Z</div>
+                    <div class="key" onclick="pressKey(this);" id="keyU">U</div>
+                    <div class="key" onclick="pressKey(this);" id="keyI">I</div>
+                    <div class="key" onclick="pressKey(this);" id="keyO">O</div>
+                    <div class="key" onclick="pressKey(this);" id="keyA" style="clear: left; margin-left:48px;">A</div>
+                    <div class="key" onclick="pressKey(this);" id="keyS">S</div>
+                    <div class="key" onclick="pressKey(this);" id="keyD">D</div>
+                    <div class="key" onclick="pressKey(this);" id="keyF">F</div>
+                    <div class="key" onclick="pressKey(this);" id="keyG">G</div>
+                    <div class="key" onclick="pressKey(this);" id="keyH">H</div>
+                    <div class="key" onclick="pressKey(this);" id="keyJ">J</div>
+                    <div class="key" onclick="pressKey(this);" id="keyK">K</div>
+                    <div class="key" onclick="pressKey(this);" id="keyP" style="clear: left;">P</div>
+                    <div class="key" onclick="pressKey(this);" id="keyY">Y</div>
+                    <div class="key" onclick="pressKey(this);" id="keyX">X</div>
+                    <div class="key" onclick="pressKey(this);" id="keyC">C</div>
+                    <div class="key" onclick="pressKey(this);" id="keyV">V</div>
+                    <div class="key" onclick="pressKey(this);" id="keyB">B</div>
+                    <div class="key" onclick="pressKey(this);" id="keyN">N</div>
+                    <div class="key" onclick="pressKey(this);" id="keyM">M</div>
+                    <div class="key" onclick="pressKey(this);" id="keyL">L</div>
+                </div>
+                <div class="line"></div>
+
+                <div id="plugboard">
+                    <div class="plug" onclick="plug(this);">Q</div>
+                    <div class="plug" onclick="plug(this);">W</div>
+                    <div class="plug" onclick="plug(this);">E</div>
+                    <div class="plug" onclick="plug(this);">R</div>
+                    <div class="plug" onclick="plug(this);">T</div>
+                    <div class="plug" onclick="plug(this);">Z</div>
+                    <div class="plug" onclick="plug(this);">U</div>
+                    <div class="plug" onclick="plug(this);">I</div>
+                    <div class="plug" onclick="plug(this);">O</div>
+                    <div class="plug" style="clear: left; margin-left:48px;" onclick="plug(this);">A</div>
+                    <div class="plug" onclick="plug(this);">S</div>
+                    <div class="plug" onclick="plug(this);">D</div>
+                    <div class="plug" onclick="plug(this);">F</div>
+                    <div class="plug" onclick="plug(this);">G</div>
+                    <div class="plug" onclick="plug(this);">H</div>
+                    <div class="plug" onclick="plug(this);">J</div>
+                    <div class="plug" onclick="plug(this);">K</div>
+                    <div class="plug" style="clear: left;" onclick="plug(this);">P</div>
+                    <div class="plug" onclick="plug(this);">Y</div>
+                    <div class="plug" onclick="plug(this);">X</div>
+                    <div class="plug" onclick="plug(this);">C</div>
+                    <div class="plug" onclick="plug(this);">V</div>
+                    <div class="plug" onclick="plug(this);">B</div>
+                    <div class="plug" onclick="plug(this);">N</div>
+                    <div class="plug" onclick="plug(this);">M</div>
+                    <div class="plug" onclick="plug(this);">L</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="enigma-book" class="page1">
+            <div id="plaintext"><h1>Plaintext:</h1></div>
+            <div id="ciphertext"><h1>Ciphertext:</h1></div>
+            <div id="options"><a onclick="decrypt();">Decrypt</a><a onclick="encrypt();">Encrypt</a><a onclick="clearText();">Clear</a><a onclick="showLog();</a></div>
+        </div>
+
+        <div id="log" style="display: none;"><h1>Encryption Steps:</h1></div>
+    </div>
+    <div style="margin-top:16px"><div id="mmt-51e76f14-ba9e-4e15-97da-a095d878751c"></div><script type="text/javascript" data-cfasync="false">$MMT = window.$MMT || {}; $MMT.cmd = $MMT.cmd || [];$MMT.cmd.push(function(){ $MMT.display.slots.push(["51e76f14-ba9e-4e15-97da-a095d878751c"]); })</script></div>
+    <div id="footer">NiggAli Enigma Çözücü - by <a  target="_blank">İşsiz Kayra</a></div>
+
+    <script src="https://www.101computing.net/enigma/js/index.js"></script>
+    <script>applySettings();</script>
+</body>
+</html>

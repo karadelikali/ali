@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şifreli Erişim</title>
+    <!-- Optional: Modern font için Google Fonts (isteğe bağlı, ekleyin eğer isterseniz) -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet"> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Code Pro', 'Courier New', monospace; /* Modern monospace font */
+            background: linear-gradient(135deg, #1e3c72, #2a5298, #1e3c72); /* Daha yumuşak gradient */
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px; /* Rem bazlı için kök */
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 2rem; /* Rem birimi için */
+            max-width: 800px; /* Daha geniş mobile uyum */
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .phase {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .phase h2 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .code-display {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            color: #00ff00;
+            word-break: break-all;
+            border: 1px solid #00ff00;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        button {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        button:hover, button:active {
+            transform: scale(1.05); /* Modern scale efekt, touch-friendly */
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success {
+            color: #00ff00;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .error {
+            color: #ff4444;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .enigma-machine {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border: 2px solid #8B4513;
+        }
+
+        .enigma-title {
+            color: #ffd700;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .enigma-text {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            color: #00ff00;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            margin: 1rem 0;
+            border: 1px solid #00ff00;
+        }
+
+        .video-container {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .video-container.show {
+            display: block;
+        }
+
+        .video-placeholder {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px dashed #ffd700;
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .phase.completed {
+            opacity: 0.6;
+            border-left-color: #00ff00;
+        }
+
+        .phase.active {
+            border-left-color: #ffd700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Yeni buton stili */
+        #betterVideoButton {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        #betterVideoButton button {
+            background: linear-gradient(45deg, #ff4500, #ff8c00);
+        }
+
+        /* Mobile Uyum: Küçük ekranlar için ayarlar */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .phase h2 {
+                font-size: 1.3rem;
+            }
+            input[type="text"], button {
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 ALİ DOĞUM GÜNÜ HEDİYESİNE ULAŞMAYA LAYIK MI TESTİ</h1>
+        <p> Sonucu görmek için beş aşamalı şifreleme sistemini geçecen kardeş.</p>
+
+        <!-- 1. Aşama: Base64 -->
+        <div class="phase active" id="phase1">
+            <h2>🔍 1. ADIM: ŞİFRE ÇÖZME</h2>
+            <div class="instructions">
+                Ben sana boşuna base64 çalış demedim:
+            </div>
+            <div class="code-display">bmlnZ2F2ZWthcmFkZWxpa3NhaGliaWFsaQ==</div>
+            <input type="text" id="base64Input" placeholder="Base64 kodunu çözün ve buraya yazın..." />
+            <button onclick="checkBase64()">Şifreyi Çöz</button>
+            <div id="base64Result"></div>
+        </div>
+
+        <!-- 2. Aşama: Kolay Bilmecesi -->
+        <div class="phase hidden" id="phase2">
+            <h2>🧠 2. ADIM: BİLMECE</h2>
+            <div class="instructions">
+                Bakalım beynin var mı: <br>
+                "Dünya'da ne kadar çok alırsan o kadar çok büyür ama biz uzay boşluğundakini soruyoruz. Nedir o?(biz severiz)"
+            </div>
+            <input type="text" id="riddle1Input" placeholder="Cevabınızı yazın..." />
+            <button onclick="checkRiddle1()">Bilmeciyi Çöz</button>
+            <div id="riddle1Result"></div>
+        </div>
+
+        <!-- 3. Aşama: Orta Bilmecesi -->
+        <div class="phase hidden" id="phase3">
+            <h2>🧠 3. ADIM: BİLMECE</h2>
+            <div class="instructions">
+                Biraz daha zor: <br>
+                "Bi adam yolda yürüyo yağmur yağıyo ama adamın saçı hiç ıslanmıyo bul bakalım neden?"
+            </div>
+            <input type="text" id="riddle2Input" placeholder="Cevabınızı yazın..." />
+            <button onclick="checkRiddle2()">Bilmeciyi Çöz</button>
+            <div id="riddle2Result"></div>
+        </div>
+
+        <!-- 4. Aşama: Zor Bilmecesi -->
+        <div class="phase hidden" id="phase4">
+            <h2>🧠 4. ADIM: BİLMECE</h2>
+            <div class="instructions">
+                İyi beynin var sanırım da ne kadar var: <br>
+                "Ali yürüyerek evden Dosi'ye gidiyor ve Dosi'den 100 mum alıyor. Dosi Ali'ye mumları test ettiğini ve yakılan bu 100 mumun her saat başı yarısının söndüğünü söylüyor. Ali mumları paketli şekilde alıp götürüyor ve eve varıyor 6 saat sonra kaç mum sönük durumdadır?"
+            </div>
+            <input type="text" id="riddle3Input" placeholder="Cevabınızı yazın..." />
+            <button onclick="checkRiddle3()">Bilmeciyi Çöz</button>
+            <div id="riddle3Result"></div>
+        </div>
+
+        <!-- 5. Aşama: Enigma (En Sona) -->
+        <div class="phase hidden" id="phase5">
+            <h2>⚙️ 5. ADIM: ENIGMA</h2>
+            <div class="instructions">
+                Tebrikler! Son adım: 2. Dünya Savaşı'ndan bir Enigma makinesi mesajını çözmelisiniz.
+            </div>
+            <div class="enigma-machine">
+                <div class="enigma-title">🔧 ENİGMA MAKİNESİ M3</div>
+                <div class="enigma-text">ZVMIR WNYXH MEFKW ETTT</div>
+                <div style="font-size: 0.75rem; color: #ccc; margin-top: 0.5rem;">
+                    Reflektör: UKW-B | Rotor: III - I - I | Ring: NIG | Pozisyon: GGA | Bağlantı: AL IO PT UM KC
+                </div>
+            </div>
+            <button onclick="getHint()" style="background: linear-gradient(45deg, #4CAF50, #8BC34A);">İpucu Al</button>
+            <input type="text" id="enigmaInput" placeholder="Enigma mesajını çözün..." />
+            <button onclick="checkEnigma()">Enigma Çöz</button>
+            <div id="enigmaResult"></div>
+        </div>
+
+        <!-- 1. Video Alanı (Phase 4 sonrası) -->
+        <div class="video-container" id="videoContainer1">
+            <h2>🎉 İyi iyi bu 4 aşamayı geçtiğine göre artık ehliyet alabilirsin IQn 79 üzerinde. </h2>
+            <p>İzle bakalım kral</p>
+            <div class="video-placeholder">
+                <h3>🎬 VİDEON</h3>
+                <video width="100%" controls>
+                    <source src="video1.mp4" type="video/mp4">
+                    Tarayıcınız video elementini desteklemiyor.
+                </video>
+            </div>
+            <div id="betterVideoButton">
+                <button onclick="showPhase5()">Daha iyisini görmek ister misin?</button>
+            </div>
+        </div>
+
+        <!-- 2. Video Alanı (Phase 5 sonrası) -->
+        <div class="video-container" id="videoContainer2">
+            <h2>🎉 Bu biraz zor olmuş olabilir ama sen halletmişsindir.</h2>
+            <p>Daha iyi videonuz hazır!</p>
+            <div class="video-placeholder">
+                <h3>🎬 2. VİDEONUZ (DAHA İYİSİ)</h3>
+                <p>Buraya 2. video dosyanızı yerleştirin:</p>
+                <video width="100%" controls>
+                    <source src="your-video2.mp4" type="video/mp4">
+                    Tarayıcınız video elementini desteklemiyor.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let phase1Complete = false;
+        let phase2Complete = false;
+        let phase3Complete = false;
+        let phase4Complete = false;
+        let phase5Complete = false;
+
+        function checkBase64() {
+            const input = document.getElementById('base64Input').value.trim();
+            const result = document.getElementById('base64Result');
+            const correctAnswer = "niggavekaradeliksahibiali";
+
+            if (input.toLowerCase() === correctAnswer.toLowerCase()) {
+                result.innerHTML = '<div class="success">✅ Doğru! 1. aşama damam!</div>';
+                phase1Complete = true;
+                document.getElementById('phase1').classList.add('completed');
+                document.getElementById('phase1').classList.remove('active');
+                document.getElementById('phase2').classList.remove('hidden');
+                document.getElementById('phase2').classList.add('active');
+            } else {
+                result.innerHTML = '<div class="error">❌ Bi base64 çözemedin mk.</div>';
+            }
+        }
+
+        function checkRiddle1() {
+            const input = document.getElementById('riddle1Input').value.trim();
+            const result = document.getElementById('riddle1Result');
+            const correctAnswer = "kara delik";
+
+            if (input.toLowerCase() === correctAnswer.toLowerCase()) {
+                result.innerHTML = '<div class="success">✅ Doğru! 2. aşama damam!</div>';
+                phase2Complete = true;
+                document.getElementById('phase2').classList.add('completed');
+                document.getElementById('phase2').classList.remove('active');
+                document.getElementById('phase3').classList.remove('hidden');
+                document.getElementById('phase3').classList.add('active');
+            } else {
+                result.innerHTML = '<div class="error">❌ Yanlış! Ne mal adamsın</div>';
+            }
+        }
+
+        function checkRiddle2() {
+            const input = document.getElementById('riddle2Input').value.trim();
+            const result = document.getElementById('riddle2Result');
+            const correctAnswer = "kel";
+
+            if (input.toLowerCase() === correctAnswer.toLowerCase()) {
+                result.innerHTML = '<div class="success">✅ Doğru! 3. aşama damam!!</div>';
+                phase3Complete = true;
+                document.getElementById('phase3').classList.add('completed');
+                document.getElementById('phase3').classList.remove('active');
+                document.getElementById('phase4').classList.remove('hidden');
+                document.getElementById('phase4').classList.add('active');
+            } else {
+                result.innerHTML = '<div class="error">❌ Yanlış! Ne mal adamsın</div>';
+            }
+        }
+
+        function checkRiddle3() {
+            const input = document.getElementById('riddle3Input').value.trim();
+            const result = document.getElementById('riddle3Result');
+            const correctAnswer = "100";
+
+            if (input.toLowerCase() === correctAnswer.toLowerCase()) {
+                result.innerHTML = '<div class="success">✅ İyi biraz beyin kırıntısı varmış.</div>';
+                phase4Complete = true;
+                document.getElementById('phase4').classList.add('completed');
+                document.getElementById('phase4').classList.remove('active');
+                // 1. Video'yu göster
+                document.getElementById('videoContainer1').classList.add('show');
+                document.getElementById('videoContainer1').scrollIntoView({ behavior: 'smooth' });
+                // 10 saniye sonra butonu göster
+                setTimeout(() => {
+                    document.getElementById('betterVideoButton').style.display = 'block';
+                }, 10000); // 10 saniye = 10000 ms
+            } else {
+                result.innerHTML = '<div class="error">❌ Yanlış! Hesapla hesapla daha çok hesaplarsın.n</div>';
+            }
+        }
+
+        function showPhase5() {
+            document.getElementById('betterVideoButton').style.display = 'none'; // Butonu gizle
+            document.getElementById('phase5').classList.remove('hidden');
+            document.getElementById('phase5').classList.add('active');
+            document.getElementById('phase5').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function checkEnigma() {
+            const input = document.getElementById('enigmaInput').value.trim();
+            const result = document.getElementById('enigmaResult');
+            const correctAnswer = "optuk ordan cokca dgko";
+
+            if (input.toLowerCase().replace(/\s+/g, '') === correctAnswer.toLowerCase().replace(/\s+/g, '')) {
+                result.innerHTML = '<div class="success">✅ Helal lan yusufi</div>';
+                phase5Complete = true;
+                document.getElementById('phase5').classList.add('completed');
+                document.getElementById('phase5').classList.remove('active');
+                // 2. Video'yu göster
+                document.getElementById('videoContainer2').classList.add('show');
+                document.getElementById('videoContainer2').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                result.innerHTML = '<div class="error">❌ Yanlış! Bunda sana laf edemem güzel hazırladım.</div>';
+            }
+        }
+
+        function getHint() {
+            if (confirm("Enigma çözücüye gitmek ister misin? (Bu ipucu seni enigma.html sayfasına yönlendirecek)")) {
+                window.location.href = 'enigma.html'; 
+            }
+        }
+
+        // Enter tuşu ile form gönderme
+        document.getElementById('base64Input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkBase64();
+        });
+        document.getElementById('riddle1Input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkRiddle1();
+        });
+        document.getElementById('riddle2Input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkRiddle2();
+        });
+        document.getElementById('riddle3Input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkRiddle3();
+        });
+        document.getElementById('enigmaInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkEnigma();
+        });
+    </script>
+</body>
+</html>
