@@ -204,6 +204,26 @@
             background: linear-gradient(45deg, #ff4500, #ff8c00);
         }
 
+        /* Seçim butonları */
+        .choice-buttons {
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .choice-buttons.show {
+            display: block;
+        }
+
+        .choice-button-good {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A) !important;
+            color: #fff !important;
+        }
+
+        .choice-button-bad {
+            background: linear-gradient(45deg, #f44336, #ff5722) !important;
+            color: #fff !important;
+        }
+
         /* Mobile Uyum: Küçük ekranlar için ayarlar */
         @media (max-width: 600px) {
             .container {
@@ -294,6 +314,14 @@
             <div id="enigmaResult"></div>
         </div>
 
+        <!-- Seçim Bölümü (Enigma sonrası) -->
+        <div class="choice-buttons" id="choiceSection">
+            <h2>🤔 Önce iyi mi kötü mü?</h2>
+            <p>Bu test senin için nasıldı?</p>
+            <button class="choice-button-good" onclick="showGoodVideos()">İyi</button>
+            <button class="choice-button-bad" onclick="showBadVideos()">Kötü(İyinin Kötüsü He)</button>
+        </div>
+
         <!-- 1. Video Alanı (Phase 4 sonrası) -->
         <div class="video-container" id="videoContainer1">
             <h2>🎉 İyi iyi bu 4 aşamayı geçtiğine göre artık ehliyet alabilirsin IQn 79 üzerinde. </h2>
@@ -310,15 +338,45 @@
             </div>
         </div>
 
-        <!-- 2. Video Alanı (Phase 5 sonrası) -->
-        <div class="video-container" id="videoContainer2">
-            <h2>🎉 Bu biraz zor olmuş olabilir ama sen halletmişsindir.</h2>
-            <p>Daha iyi videonuz hazır!</p>
+        <!-- İyi seçim videoları -->
+        <div class="video-container" id="goodVideosContainer">
+            <h2>🎉 Harika! İyi geçtiğine sevindik!</h2>
+            <p>İşte ödülün:</p>
+            
             <div class="video-placeholder">
-                <h3>🎬 2. VİDEONUZ (DAHA İYİSİ)</h3>
-                <p>Buraya 2. video dosyanızı yerleştirin:</p>
+                <h3>🎬 VİDEO 2 (İyi Seçim)</h3>
                 <video width="100%" controls>
-                    <source src="your-video2.mp4" type="video/mp4">
+                    <source src="video2.mp4" type="video/mp4">
+                    Tarayıcınız video elementini desteklemiyor.
+                </video>
+            </div>
+            
+            <div class="video-placeholder">
+                <h3>🎬 VİDEO 3 (Bonus)</h3>
+                <video width="100%" controls>
+                    <source src="video3.mp4" type="video/mp4">
+                    Tarayıcınız video elementini desteklemiyor.
+                </video>
+            </div>
+        </div>
+
+        <!-- Kötü seçim videoları -->
+        <div class="video-container" id="badVideosContainer">
+            <h2>😔 Üzgünüz, kötü geçti...</h2>
+            <p>Belki bunlar moralini düzeltir:</p>
+            
+            <div class="video-placeholder">
+                <h3>🎬 VİDEO 3 (Moral Video)</h3>
+                <video width="100%" controls>
+                    <source src="video3.mp4" type="video/mp4">
+                    Tarayıcınız video elementini desteklemiyor.
+                </video>
+            </div>
+            
+            <div class="video-placeholder">
+                <h3>🎬 VİDEO 2 (İyileştirici)</h3>
+                <video width="100%" controls>
+                    <source src="video2.mp4" type="video/mp4">
                     Tarayıcınız video elementini desteklemiyor.
                 </video>
             </div>
@@ -401,7 +459,7 @@
                     document.getElementById('betterVideoButton').style.display = 'block';
                 }, 10000); // 10 saniye = 10000 ms
             } else {
-                result.innerHTML = '<div class="error">❌ Yanlış! Hesapla hesapla daha çok hesaplarsın.n</div>';
+                result.innerHTML = '<div class="error">❌ Yanlış! Hesapla hesapla daha çok hesaplarsın.</div>';
             }
         }
 
@@ -422,12 +480,24 @@
                 phase5Complete = true;
                 document.getElementById('phase5').classList.add('completed');
                 document.getElementById('phase5').classList.remove('active');
-                // 2. Video'yu göster
-                document.getElementById('videoContainer2').classList.add('show');
-                document.getElementById('videoContainer2').scrollIntoView({ behavior: 'smooth' });
+                // Seçim bölümünü göster
+                document.getElementById('choiceSection').classList.add('show');
+                document.getElementById('choiceSection').scrollIntoView({ behavior: 'smooth' });
             } else {
                 result.innerHTML = '<div class="error">❌ Yanlış! Bunda sana laf edemem güzel hazırladım.</div>';
             }
+        }
+
+        function showGoodVideos() {
+            document.getElementById('choiceSection').style.display = 'none';
+            document.getElementById('goodVideosContainer').classList.add('show');
+            document.getElementById('goodVideosContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showBadVideos() {
+            document.getElementById('choiceSection').style.display = 'none';
+            document.getElementById('badVideosContainer').classList.add('show');
+            document.getElementById('badVideosContainer').scrollIntoView({ behavior: 'smooth' });
         }
 
         function getHint() {
